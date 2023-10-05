@@ -1,18 +1,18 @@
 import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository'
 import { makeQuestion } from 'test/factories/make-question'
-import { DeleteQuestionUseCase } from '../delete-question'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { EditQuestionUseCase } from '../edit-question'
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository
-let sut: DeleteQuestionUseCase
+let sut: EditQuestionUseCase
 
-describe('Delete question by id', () => {
+describe('Edit question by id', () => {
   beforeEach(() => {
     inMemoryQuestionsRepository = new InMemoryQuestionsRepository()
-    sut = new DeleteQuestionUseCase(inMemoryQuestionsRepository)
+    sut = new EditQuestionUseCase(inMemoryQuestionsRepository)
   })
 
-  it('should be to delete a question', async () => {
+  it('should be to edit a question', async () => {
     const newQuestion = makeQuestion({
       authorId: new UniqueEntityID('author-1')
     }, new UniqueEntityID('question-1'))
@@ -20,14 +20,19 @@ describe('Delete question by id', () => {
     inMemoryQuestionsRepository.create(newQuestion)
     
     await sut.execute({
-      questionId: 'question-1',
       authorId: 'author-1',
+      questionId: newQuestion.id.toString(),
+      title: 'test',
+      content: 'test content'
     })
   
-    expect(inMemoryQuestionsRepository.items).toHaveLength(0)
+    expect(inMemoryQuestionsRepository.items[0]).toMatchObject({
+      title: 'test',
+      content: 'test content',
+    })
   })
 
-  it('should not be able to delete a question from another user', async () => {
+  it('should not be able to edit a question from another user', async () => {
     const newQuestion = makeQuestion({
       authorId: new UniqueEntityID('author-1')
     }, new UniqueEntityID('question-1'))
@@ -36,8 +41,10 @@ describe('Delete question by id', () => {
 
     expect(() => {
       return sut.execute({
-        questionId: 'question-1',
-        authorId: 'author-2'
+        authorId: 'author-2',
+        questionId: newQuestion.id.toString(),
+        title: 'test',
+        content: 'test content'
       })
     }).rejects.toBeInstanceOf(Error)
 
