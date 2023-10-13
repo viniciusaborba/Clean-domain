@@ -48,7 +48,7 @@ describe('Delete answer by id', () => {
     expect(inMemoryAnswerAttachmentsRepository.items).toHaveLength(0)
   })
 
-  it('should not be able to delete am answer from another user', async () => {
+  it('should not be able to delete an answer from another user', async () => {
     const newAnswer = makeAnswer(
       {
         authorId: new UniqueEntityID('author-1'),
