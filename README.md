@@ -1,6 +1,6 @@
 # Clean Domain
 
-Clean Domain is a simple forum application that I devoloped to train the concepts of DDD and Clean Architecture.
+Clean Domain is a simple forum application that I developed to train the concepts of DDD and Clean Architecture.
   
 ## 🚀 Technologies
 
